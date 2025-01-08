@@ -1,32 +1,37 @@
 local thisState = {}
 local BASE_COLOR = {1,1,1}
 textureTable = {
-    {   
+    {
         id = 1,
+        texture = "air",
+        name = "Air",
+        color = BASE_COLOR
+    },
+    {   
+        id = 2,
         texture = "grass",
         name = "Grass",
         color = {100/255, 190/255, 89/255},
         randomRotate = true
     },
     {
-        id = 2,
+        id = 3,
         texture = "log_side",
         name = "Log",
         color = BASE_COLOR
     },
     {
-        id = 3,
+        id = 4,
         texture = "log_top",
         name = "Log top",
         color = BASE_COLOR
     },
     {
-        id = 4,
+        id = 5,
         texture = "planks",
         name = "Planks",
         color = BASE_COLOR
     }
-
 }
 textureTableSize = 0
 for i,v in pairs(textureTable) do textureTableSize = textureTableSize + 1 end
@@ -44,6 +49,7 @@ map = {
 selectedTile = 3
 tileSize = 16
 drawingMode = "hold"
+isDrawingSolid = true
 startedDrawingRectangle = false
 rectangleStart = {0,0}
 rectangleEnd = {0,0}
@@ -140,8 +146,9 @@ function drawMap(optimisePerformance,cam)
                 if isSolid then
                     love.graphics.setColor(r,g,b)
                 else
-                    love.graphics.setColor(r*0.5,g*0.5,b*0.5)
+                    love.graphics.setColor(r*0.8,g*0.8,b*0.8)
                 end
+
                 if doRandomRotate then
                     local rotate = math.floor(i*j+j^2)%4 * math.pi/2
 
@@ -162,7 +169,7 @@ end
 
 function thisState.load(arg)
     print("arg",json.encode(arg))
-    local mapWidth,mapHeight,mapDefault = 20,20,{id = 1,solid = true}
+    local mapWidth,mapHeight,mapDefault = 20,20,{id = 2,solid = false}
     if arg then
         mapWidth = arg.width
         mapHeight = arg.height
@@ -254,7 +261,7 @@ function thisState.update()
         local mapY = mapY + 1
         if mapX > 0 and mapY > 0 and mapX <= map.width and mapY <= map.height then
             map[mapX][mapY].id = selectedTile
-            map[mapX][mapY].solid = true
+            map[mapX][mapY].solid = isDrawingSolid
         end
     end
 end
@@ -290,7 +297,12 @@ function thisState.draw()
         local x2,y2 = toScreen(rectangleEnd[1], rectangleEnd[2])
         love.graphics.rectangle("line", x, y, (x2-x), (y2-y))
     end
-    local _,windowHeight = love.window.getMode()
+    local windowWidth,windowHeight = love.window.getMode()
+    local drawSolidString = ""
+
+    if isDrawingSolid then drawSolidString = "Drawing Wall" else drawSolidString = "Drawing Ground" end
+    
+    love.graphics.print(drawSolidString, 0, windowHeight-32)
     love.graphics.print("F1: click mode, F2: hold mode, F3: rectangle mode, F5: save map, F6: new map", 0, windowHeight-16)
     love.graphics.print(string.format("%d , %d",cam.width,cam.height),300,200)
 end
@@ -307,6 +319,9 @@ function thisState.keypressed(key, scancode, isrepeat)
         end
     end
 
+    if key == "g" then
+        isDrawingSolid = not isDrawingSolid
+    end
 
 
     if key == "f1" then

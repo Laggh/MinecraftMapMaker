@@ -1,27 +1,33 @@
 local thisState = {}
 local BASE_COLOR = {1,1,1}
 textureTable = {
-    {   
+    {
         id = 1,
+        texture = "air",
+        name = "Air",
+        color = BASE_COLOR
+    },
+    {   
+        id = 2,
         texture = "grass",
         name = "Grass",
         color = {100/255, 190/255, 89/255},
         randomRotate = true
     },
     {
-        id = 2,
+        id = 3,
         texture = "log_side",
         name = "Log",
         color = BASE_COLOR
     },
     {
-        id = 3,
+        id = 4,
         texture = "log_top",
         name = "Log top",
         color = BASE_COLOR
     },
     {
-        id = 4,
+        id = 5,
         texture = "planks",
         name = "Planks",
         color = BASE_COLOR
