@@ -108,8 +108,8 @@ function getMapCanvas()
     return canvas
 end
 
-function drawMap(optimisePerformance,cam)
-    local offX,offY = 0,0
+function drawMap(optimisePerformance, cam)
+    local offX, offY = 0, 0
     local camScale = 1
     if cam then
         offX = -cam.offX 
@@ -122,44 +122,51 @@ function drawMap(optimisePerformance,cam)
     local endX = map.width
     local endY = map.height
     if optimisePerformance and cam then
-        startX = math.max(math.floor(offX),1)
-        startY = math.max(math.floor(offY),1)
-        endX = math.min(math.ceil(offX + cam.width / tileSize / cam.scale),map.height)
-        endY = math.min(math.ceil(offY + cam.height / tileSize / cam.scale),map.height)
+        startX = math.max(math.floor(offX), 1)
+        startY = math.max(math.floor(offY), 1)
+        endX = math.min(math.ceil(offX + cam.width / tileSize / cam.scale), map.width)
+        endY = math.min(math.ceil(offY + cam.height / tileSize / cam.scale), map.height)
     end
 
+    --[[
+    local shadowAngle = math.pi*1.25
+    local shadowForce = 0.2
+    local simpleShadowX = math.cos(shadowAngle)
+    local simpleShadowY = math.sin(shadowAngle)
+    local shadowX = simpleShadowX * camScale * tileSize * shadowForce
+    local shadowY = simpleShadowY * camScale * tileSize * shadowForce
+    future shadow functions (will redo how map works for it)]] 
 
-    
     for i = startX, endX do
-        for j = startY , endY do
-            local x = ((i-1)-offX)*tileSize*camScale
-            local y = ((j-1)-offY)*tileSize*camScale
+        for j = startY, endY do
+            local x = ((i-1) - offX) * tileSize * camScale
+            local y = ((j-1) - offY) * tileSize * camScale
 
             local tile = map[i][j].id
             local drawName = textureTable[tile].texture
             local draw = img[drawName]
             local isSolid = map[i][j].solid
             local doRandomRotate = textureTable[tile].randomRotate
-            local r,g,b = unpack(textureTable[tile].color)
+            local r, g, b = unpack(textureTable[tile].color)
 
             if draw then
                 if isSolid then
+                    --love.graphics.setColor(0,0,0,0.2)
+                    --love.graphics.rectangle("fill",x + shadowX, y + shadowY, tileSize * camScale, tileSize * camScale)
                     love.graphics.setColor(r,g,b)
                 else
                     love.graphics.setColor(r*0.8,g*0.8,b*0.8)
                 end
-
                 if doRandomRotate then
-                    local rotate = math.floor(i*j+j^2)%4 * math.pi/2
-
-                    love.graphics.draw(draw, x+(camScale*tileSize/2), y+(camScale*tileSize/2), rotate, camScale, camScale, tileSize/2, tileSize/2)
+                    local rotate = math.floor(i * j + j^2) % 4 * math.pi / 2
+                    love.graphics.draw(draw, x + (camScale * tileSize / 2), y + (camScale * tileSize / 2), rotate, camScale, camScale, tileSize / 2, tileSize / 2)
                 else
                     love.graphics.draw(draw, x, y, 0, camScale, camScale)
                 end
-                love.graphics.setColor(1,1,1)
+                love.graphics.setColor(1, 1, 1)
             else
                 love.graphics.rectangle("line", x, y, tileSize, tileSize)
-                love.graphics.line(x, y, x+tileSize, y+tileSize)
+                love.graphics.line(x, y, x + tileSize, y + tileSize)
             end
         end
     end
@@ -217,15 +224,16 @@ function thisState.update()
             else
                 local x1,y1 = rectangleStart[1], rectangleStart[2]
                 local x2,y2 = rectangleEnd[1], rectangleEnd[2]
-
+                if not (x1==0 and x2 == 0 and y1 == 0 and y2 == 0) then
                 if x1 > x2 then
                     x1,x2 = x2,x1
                 end
                 if y1 > y2 then
                     y1,y2 = y2,y1
                 end
-                x1 = math.floor(x1)
-                y1 = math.floor(y1)
+
+                x1 = math.ceil(x1)
+                y1 = math.ceil(y1)
                 x2 = math.ceil(x2)
                 y2 = math.ceil(y2)
 
@@ -233,13 +241,14 @@ function thisState.update()
                     for j = y1, y2 do
                         if i > 0 and j > 0 and i <= map.width and j <= map.height then
                             map[i][j].id = selectedTile
-                            map[i][j].solid = true
+                            map[i][j].solid = isDrawingSolid
                         end
                     end
                 end
 
                 rectangleStart = {0,0}
                 rectangleEnd = {0,0}
+                end
             end
         else
             if not love.mouse.isDown(1) then
@@ -368,7 +377,7 @@ function thisState.mousepressed(x,y)
         local mapY = mapY + 1
         if mapX > 0 and mapY > 0 and mapX <= map.width and mapY <= map.height then
             map[mapX][mapY].id = selectedTile
-            map[mapX][mapY].solid = true
+            map[mapX][mapY].solid = isDrawingSolid
         end
     end
 end
