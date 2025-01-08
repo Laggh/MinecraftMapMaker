@@ -172,8 +172,6 @@ function drawMap(optimisePerformance, cam)
     end
 end
 
-
-
 function thisState.load(arg)
     print("arg",json.encode(arg))
     local mapWidth,mapHeight,mapDefault = 20,20,{id = 2,solid = false}
@@ -182,7 +180,6 @@ function thisState.load(arg)
         mapHeight = arg.height
         mapDefault = arg.default
     end
-    print("thisLoad",mapWidth,mapHeight,json.encode(mapDefault))
     love.window.setMode(800, 600, {resizable=true})
     createMap(mapWidth, mapHeight, mapDefault)
 end
@@ -261,7 +258,6 @@ function thisState.update()
             end
         end
     end
-
 
     if love.mouse.isDown(1) and drawingMode == "hold" then
         local mx,my = love.mouse.getPosition()
@@ -394,7 +390,6 @@ function thisState.wheelmoved(x,y)
 end
 
 function thisState.resize(w,h)
-    print("aaaaaaaaaaaaaaaaaaaaaaaaaaaa")
     cam.width = w
     cam.height = h
 end

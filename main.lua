@@ -23,7 +23,6 @@ function changeGameState(_State,_Arg)
     end
     
     if currentGameState.load then
-        print(_State,json.encode(_Arg))
         currentGameState.load(_Arg)
     else
         error(string.interpolate("State \"${state}\" does not have a load function",

@@ -1,5 +1,10 @@
 -- FUNCTIONS
 
+-- Prints a string already formated with string.format (same thing as print(string.format()))
+-- (String,Arguments) -> Void
+function printf(_String, ...)
+    print(string.format(_String, ...))
+end
 -- Interpolates a string with the given arguments.
 -- (String[],Arguments[]) -> String
 function string.interpolate(_Str,_Args)
