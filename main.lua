@@ -21,8 +21,9 @@ function changeGameState(_State,_Arg)
         error(string.interpolate("State \"${state}\" does not exist",
         {state = _State}))
     end
-
+    
     if currentGameState.load then
+        print(_State,json.encode(_Arg))
         currentGameState.load(_Arg)
     else
         error(string.interpolate("State \"${state}\" does not have a load function",
@@ -87,5 +88,17 @@ end
 function love.textinput(t)
     if currentGameState.textinput then
         currentGameState.textinput(t)
+    end
+end
+
+function love.wheelmoved(x,y)
+    if currentGameState.wheelmoved then
+        currentGameState.wheelmoved(x,y)
+    end
+end
+
+function love.resize(w, h)
+    if currentGameState.resize then
+        currentGameState.resize(w, h)
     end
 end

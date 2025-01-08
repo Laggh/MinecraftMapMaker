@@ -29,6 +29,28 @@ function strJoin(...)
     return table.concat(args)
 end
 
+--creates a shallow copy of a table
+function shallowCopy(_Table)
+    local newTable = {}
+    for i,v in pairs(_Table) do
+        newTable[i] = v
+    end
+    return newTable
+end
+
+--creates a deep copy of a table
+function deepCopy(_Table)
+    local newTable = {}
+    for i,v in pairs(_Table) do
+        if type(v) == "table" then
+            newTable[i] = deepCopy(v)
+        else
+            newTable[i] = v
+        end
+    end
+    return newTable
+end
+
 -- Draws an image centered at the given coordinates.
 -- (Draw,X,Y,R,Sx,Sy)
 function drawCentered(_Draw, _X, _Y, _R, _Sx , _Sy)
