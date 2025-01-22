@@ -130,7 +130,9 @@ local function loadAllThings(_Path)
 end
 --LOADING FILES
 
+
 img = {}
+love.graphics.setDefaultFilter("nearest", "nearest", 1)
 img = loadAllThings("img")
 
 sfx = {}

@@ -1,38 +1,8 @@
 local thisState = {}
 local BASE_COLOR = {1,1,1}
-textureTable = {
-    {
-        id = 1,
-        texture = "air",
-        name = "Air",
-        color = BASE_COLOR
-    },
-    {   
-        id = 2,
-        texture = "grass",
-        name = "Grass",
-        color = {100/255, 190/255, 89/255},
-        randomRotate = true
-    },
-    {
-        id = 3,
-        texture = "log_side",
-        name = "Log",
-        color = BASE_COLOR
-    },
-    {
-        id = 4,
-        texture = "log_top",
-        name = "Log top",
-        color = BASE_COLOR
-    },
-    {
-        id = 5,
-        texture = "planks",
-        name = "Planks",
-        color = BASE_COLOR
-    }
-}
+textureTable = require("textureTable")
+
+
 textureTableSize = 0
 for i,v in pairs(textureTable) do textureTableSize = textureTableSize + 1 end
 cam = {
@@ -279,6 +249,10 @@ function thisState.draw()
     drawMap(true,cam)
     local x,y = toScreen(mapX, mapY)
     love.graphics.rectangle("line", x, y, tileSize * cam.scale, tileSize * cam.scale)
+
+    love.graphics.setColor(1, 1, 1, 0.25)
+    love.graphics.rectangle("line", cam.offX * tileSize * cam.scale, cam.offY * tileSize * cam.scale, map.width * tileSize * cam.scale, map.height * tileSize * cam.scale)
+    love.graphics.setColor(1, 1, 1, 1)
 
     local y = 0
     local ii = 0
